@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Startup Profit Predictor | AI-Powered Analytics</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --secondary: #8b5cf6;
+      --success: #10b981;
+      --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .main-card {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+    
+    .header-section {
+      background: var(--bg-gradient);
+      color: white;
+      padding: 3rem 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .header-section::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+      animation: pulse 15s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+    
+    .header-content {
+      position: relative;
+      z-index: 1;
+    }
+    
+    .header-section h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    
+    .header-section p {
+      opacity: 0.9;
+      font-size: 1.1rem;
+    }
+    
+    .form-section {
+      padding: 3rem 2rem;
+    }
+    
+    .input-group-custom {
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+    
+    .input-group-custom label {
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      font-size: 0.95rem;
+    }
+    
+    .icon {
+      width: 20px;
+      height: 20px;
+      margin-right: 8px;
+      opacity: 0.7;
+    }
+    
+    .form-control-custom {
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 0.875rem 1rem;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background: #f9fafb;
+    }
+    
+    .form-control-custom:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+      background: white;
+      outline: none;
+    }
+    
+    .form-control-custom:hover {
+      border-color: #d1d5db;
+      background: white;
+    }
+    
+    .currency-input {
+      position: relative;
+    }
+    
+    .currency-symbol {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #6b7280;
+      font-weight: 600;
+      pointer-events: none;
+    }
+    
+    .currency-input input {
+      padding-left: 2rem;
+    }
+    
+    .predict-btn {
+      background: var(--bg-gradient);
+      border: none;
+      padding: 1rem 3rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border-radius: 12px;
+      color: white;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+      width: 100%;
+      margin-top: 1rem;
+    }
+    
+    .predict-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 25px rgba(99, 102, 241, 0.4);
+    }
+    
+    .predict-btn:active {
+      transform: translateY(0);
+    }
+    
+    .result-card {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      border-radius: 16px;
+      padding: 2rem;
+      color: white;
+      margin-top: 2rem;
+      box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+      animation: slideIn 0.5s ease;
+    }
+    
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .result-card h3 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      opacity: 0.9;
+    }
+    
+    .result-value {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin: 0;
+    }
+    
+    .error-card {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      border-radius: 16px;
+      padding: 1.5rem;
+      color: white;
+      margin-bottom: 2rem;
+      animation: shake 0.5s ease;
+    }
+    
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      75% { transform: translateX(10px); }
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+      background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+      border-radius: 12px;
+      padding: 1.5rem;
+      border: 1px solid #e5e7eb;
+    }
+    
+    .stat-label {
+      font-size: 0.85rem;
+      color: #6b7280;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #111827;
+      margin-top: 0.5rem;
+    }
+    
+    .api-info {
+      background: #f9fafb;
+      border-left: 4px solid var(--primary);
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-top: 3rem;
+    }
+    
+    .api-info code {
+      background: #e5e7eb;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+    
+    .badge-pill {
+      background: rgba(99, 102, 241, 0.1);
+      color: var(--primary);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: inline-block;
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+<div class="container py-5">
+  <div class="main-card">
+    <div class="header-section">
+      <div class="header-content">
+        <h1>💼 Startup Profit Predictor</h1>
+        <p>AI-powered financial forecasting for modern startups</p>
+        <span class="badge-pill">🤖 Powered by Machine Learning</span>
+      </div>
+    </div>
+
+    <div class="form-section">
+      {% if error %}
+        <div class="error-card">
+          <strong>⚠️ Error:</strong> {{ error }}
+        </div>
+      {% endif %}
+
+      <form method="POST" action="/predict">
+        <div class="row">
+          <div class="col-md-6 col-lg-3">
+            <div class="input-group-custom">
+              <label>
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                </svg>
+                R&D Spend
+              </label>
+              <div class="currency-input">
+                <span class="currency-symbol">$</span>
+                <input type="number" step="0.01" min="0" class="form-control form-control-custom" name="rd_spend" placeholder="160000" required>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6 col-lg-3">
+            <div class="input-group-custom">
+              <label>
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                </svg>
+                Administration
+              </label>
+              <div class="currency-input">
+                <span class="currency-symbol">$</span>
+                <input type="number" step="0.01" min="0" class="form-control form-control-custom" name="admin_spend" placeholder="130000" required>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6 col-lg-3">
+            <div class="input-group-custom">
+              <label>
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/>
+                </svg>
+                Marketing Spend
+              </label>
+              <div class="currency-input">
+                <span class="currency-symbol">$</span>
+                <input type="number" step="0.01" min="0" class="form-control form-control-custom" name="marketing_spend" placeholder="300000" required>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6 col-lg-3">
+            <div class="input-group-custom">
+              <label>
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                State
+              </label>
+              <select class="form-control form-control-custom" name="state" required>
+                {% for s in states %}
+                  <option value="{{ s }}">{{ s }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <button class="predict-btn" type="submit">
+          🎯 Predict Profit
+        </button>
+      </form>
+
+      {% if prediction %}
+        <div class="result-card">
+          <h3>📈 Predicted Profit</h3>
+          <p class="result-value">{{ prediction }}</p>
+          <p style="margin: 0.5rem 0 0 0; opacity: 0.9; font-size: 0.95rem;">
+            Based on your input parameters and historical data patterns
+          </p>
+        </div>
+      {% endif %}
+
+      <div class="api-info">
+        <h6 style="margin-bottom: 1rem; color: #374151; font-weight: 700;">🔌 Developer API</h6>
+        <p style="margin: 0; color: #6b7280; font-size: 0.9rem;">
+          <strong>Endpoint:</strong> <code>POST /predict</code><br>
+          <strong>Format:</strong> JSON with keys: <code>rd_spend</code>, <code>admin_spend</code>, <code>marketing_spend</code>, <code>state</code>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align: center; margin-top: 2rem; color: #6b7280; font-size: 0.9rem;">
+    <p>© 2025 Startup Profit Predictor | Trusted by 10,000+ businesses worldwide</p>
+  </div>
+</div>
+</body>
+</html>
