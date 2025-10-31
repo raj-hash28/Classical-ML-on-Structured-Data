@@ -15,10 +15,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Create Flask app and allow templates to be served from the app dir or the
-# parent project dir so `index.html` can remain next to the project root
-# (handles cases where this module is in a subfolder).
 parent_dir = os.path.abspath(os.path.join(APP_DIR, '..'))
-# Prefer a `templates/` directory in either the app dir or parent project dir
 app_templates_in_app = os.path.join(APP_DIR, 'templates')
 app_templates_in_parent = os.path.join(parent_dir, 'templates')
 if os.path.isdir(app_templates_in_app) and os.path.exists(os.path.join(app_templates_in_app, 'index.html')):
@@ -30,7 +27,7 @@ elif os.path.exists(os.path.join(APP_DIR, 'index.html')):
 elif os.path.exists(os.path.join(parent_dir, 'index.html')):
     template_folder = parent_dir
 else:
-    # fallback to app dir; Jinja will raise TemplateNotFound later if missing
+   
     template_folder = APP_DIR
 
 app = Flask(__name__, template_folder=template_folder)
@@ -43,7 +40,7 @@ model = None
 try:
     model = joblib.load(MODEL_PATH)  # Pipeline(preprocess + model)
 except Exception as e:
-    # Fail early with a helpful message; keep exception chaining for debugging
+   
     logger.exception("Failed to load model")
     raise RuntimeError(f"Failed to load model at {MODEL_PATH}: {e}") from e
 
@@ -55,12 +52,12 @@ def get_states_from_model():
             return list(ohe.categories_[0])
     except Exception:
         logger.debug("Could not introspect model for trained states; using fallback.")
-    # Fallback to common states in 50_Startups dataset
+    
     return ['New York', 'California', 'Florida']
 
 TRAINED_STATES = get_states_from_model()
 
-# Utility: safely parse numeric values from form/json
+
 def to_float(x, default=None):
     """Safely convert a value to float. Accepts strings with commas.
 
@@ -84,7 +81,7 @@ def validate_state(state):
     return state in TRAINED_STATES
 
 def build_input_df(rd_spend, admin_spend, mkt_spend, state):
-    # Column names must match training
+   
     return pd.DataFrame([{
         'R&D Spend': rd_spend,
         'Administration': admin_spend,
@@ -148,11 +145,11 @@ def predict():
             pred = float(model.predict(X)[0])
         except Exception as e:
             logger.exception("Prediction failed for form submission")
-            # Don't expose internal traceback to end user
+           
             return render_template('index.html', states=TRAINED_STATES,
                                    prediction=None, error="Prediction failed. Please try different inputs or contact the administrator.")
 
-        # Nicely formatted prediction
+        
         pred_display = f"{pred:,.2f}"
         return render_template('index.html', states=TRAINED_STATES, prediction=pred_display, error=None)
 
